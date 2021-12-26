@@ -3,27 +3,29 @@ const indicatorClassName = "indicator-btn"
 const images = document.getElementsByClassName(imageClassName)
 const indicators = document.getElementsByClassName(indicatorClassName)
 const totalImages = images.length
+let carouselTimer
 let currentImage = 0
+let inTransition = false
 
 function initializeCarousel() {
-  images[currentImage].classList.add("active")
-  indicators[currentImage].classList.add("active")
+  images[totalImages - 1].classList.add("prev")
+  images[0].classList.add("active")
+  images[1].classList.add("next")
+
+  carouselTimer = setInterval(nextImage, 3000)
   setEventListeners()
-  setInterval(nextImage, 3000)
 }
 
 function setEventListeners() {
   let nextBtn = document.getElementsByClassName("carousel-button next")
   let prevBtn = document.getElementsByClassName("carousel-button prev")
 
-  nextBtn[0].addEventListener("click", nextImage)
-  prevBtn[0].addEventListener("click", prevImage)
-
-  for (let i = 0; i < indicators.length; i++) {
-    indicators[i].addEventListener("click", function () {
-      moveToImage(i)
-    })
-  }
+  nextBtn[0].addEventListener("click", function () {
+    if(!inTransition) nextImage()
+  })
+  prevBtn[0].addEventListener("click", function () {
+    if(!inTransition) prevImage()
+  })
 }
 
 function nextImage() {
@@ -46,18 +48,39 @@ function prevImage() {
   makeTransition(prev, currentImage)
 }
 
-function moveToImage(idx) {
-  let prev = currentImage
-  currentImage = idx
-  makeTransition(prev, currentImage)
-}
-
 function makeTransition(prev, curr) {
+  inTransition = true
+
+  clearInterval(carouselTimer)
+  carouselTimer = setInterval(nextImage, 3000)
+
   indicators[prev].classList.remove("active")
   indicators[curr].classList.add("active")
 
-  images[prev].classList.remove("active")
+  let oldPrev = prev - 1
+  let oldNext = prev + 1
+  if(oldPrev < 0)
+    oldPrev = totalImages - 1
+  if(oldNext >= totalImages)
+    oldNext = 0
+
+  images[oldNext].className = imageClassName
+  images[oldPrev].className = imageClassName
+
+  let newNext = curr + 1
+  let newPrev = curr - 1
+  if(newNext >= totalImages)
+    newNext = 0
+  if(newPrev < 0)
+    newPrev = totalImages - 1
+
+  images[newPrev].classList.add("prev")
   images[curr].classList.add("active")
+  images[newNext].classList.add("next")
+  setTimeout(function (){
+    images[prev].classList.remove("active")
+    inTransition = false
+  }, 1000)
 }
 
 initializeCarousel()

@@ -70,16 +70,16 @@
   transition: transform 1s;
 }
 
+.carousel-image.active {
+  opacity: 1;
+}
+
 .carousel-image.prev {
   transform: translateX(-100%);
 }
 
 .carousel-image.next {
   transform: translateX(100%);
-}
-
-.carousel-image.active {
-  opacity: 1;
 }
 
 .material-icons.md64 {
