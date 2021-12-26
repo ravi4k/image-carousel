@@ -1,11 +1,15 @@
 const imageClassName = "carousel-image"
-const images = document.getElementsByClassName(imageClassName);
+const indicatorClassName = "indicator-btn"
+const images = document.getElementsByClassName(imageClassName)
+const indicators = document.getElementsByClassName(indicatorClassName)
 const totalImages = images.length
 let currentImage = 0
 
 function initializeCarousel() {
-  setActive(currentImage)
+  images[currentImage].classList.add("active")
+  indicators[currentImage].classList.add("active")
   setEventListeners()
+  setInterval(nextImage, 3000)
 }
 
 function setEventListeners() {
@@ -14,34 +18,46 @@ function setEventListeners() {
 
   nextBtn[0].addEventListener("click", nextImage)
   prevBtn[0].addEventListener("click", prevImage)
-}
 
-function setInactive(imageIdx) {
-  images[imageIdx].classList.remove("active")
-}
-
-function setActive(imageIdx) {
-  images[imageIdx].classList.add("active")
+  for (let i = 0; i < indicators.length; i++) {
+    indicators[i].addEventListener("click", function () {
+      moveToImage(i)
+    })
+  }
 }
 
 function nextImage() {
-  setInactive(currentImage)
+  let prev = currentImage
   if(currentImage === totalImages - 1) {
     currentImage = 0
   } else {
     ++currentImage
   }
-  setActive(currentImage)
+  makeTransition(prev, currentImage)
 }
 
 function prevImage() {
-  setInactive(currentImage)
+  let prev = currentImage
   if(currentImage === 0) {
     currentImage = totalImages - 1
   } else {
     --currentImage
   }
-  setActive(currentImage)
+  makeTransition(prev, currentImage)
+}
+
+function moveToImage(idx) {
+  let prev = currentImage
+  currentImage = idx
+  makeTransition(prev, currentImage)
+}
+
+function makeTransition(prev, curr) {
+  indicators[prev].classList.remove("active")
+  indicators[curr].classList.add("active")
+
+  images[prev].classList.remove("active")
+  images[curr].classList.add("active")
 }
 
 initializeCarousel()

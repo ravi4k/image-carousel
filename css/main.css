@@ -11,10 +11,6 @@
   overflow: hidden;
 }
 
-.carousel-wrapper * {
-  box-sizing: border-box;
-}
-
 .carousel {
   height: 100vh;
   width: 100vw;
@@ -67,14 +63,19 @@
   background-color: orangered;
 }
 
-.carousel-images-wrapper {
-  display: flex;
-}
-
 .carousel-image {
+  position: absolute;
   object-fit: cover;
   opacity: 0;
   transition: transform 1s;
+}
+
+.carousel-image.prev {
+  transform: translateX(-100%);
+}
+
+.carousel-image.next {
+  transform: translateX(100%);
 }
 
 .carousel-image.active {
